@@ -10,30 +10,41 @@ namespace Cainos.PixelArtTopDown_Basic
 
         private Animator animator;
 
+        private SpriteRenderer _renderer;
+
         private void Start()
         {
             animator = GetComponent<Animator>();
+
+            _renderer = GetComponent<SpriteRenderer>();
+            if (_renderer == null)
+            {
+                Debug.LogError("Player Sprite is missing a renderer");
+            }
         }
 
 
         private void Update()
         {
+            
             Vector2 dir = Vector2.zero;
             if (Input.GetKey(KeyCode.A))
             {
                 dir.x = -1;
                 animator.SetInteger("Direction", 3);
+                _renderer.flipX = true;
             }
             else if (Input.GetKey(KeyCode.D))
             {
                 dir.x = 1;
                 animator.SetInteger("Direction", 2);
+                _renderer.flipX = false;
             }
 
             if (Input.GetKey(KeyCode.W))
             {
                 dir.y = 1;
-                animator.SetIngteer("Direction", 1);
+                animator.SetInteger("Direction", 1);
             }
             else if (Input.GetKey(KeyCode.S))
             {
