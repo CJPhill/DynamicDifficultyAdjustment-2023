@@ -22,7 +22,7 @@ namespace Cainos.PixelArtTopDown_Basic
         private SpriteRenderer _renderer;
 
         [SerializeField]
-        private InputActionReference movement, attack;
+        private InputActionReference movement, attack, Throw, Roll, Bow;
 
         private void Start()
         {
@@ -69,6 +69,12 @@ namespace Cainos.PixelArtTopDown_Basic
                 _renderer.flipX = false;
             }
             animator.SetBool("IsMoving", movementInput.magnitude > 0);
+
+            //sets X and Y in the animator tool
+            if (movementInput != Vector2.zero){
+                animator.SetFloat("XInput", movementInput.x);
+                animator.SetFloat("YInput", movementInput.y);
+            }
     
         }
 
@@ -77,6 +83,29 @@ namespace Cainos.PixelArtTopDown_Basic
             if (attackBlocked)
                 return;
             animator.SetTrigger("Attacks");
+            attackBlocked = true;
+            StartCoroutine(DelayAttack());
+        }
+        public void Throws()
+        {
+            if (attackBlocked)
+                return;
+            animator.SetTrigger("Throws");
+            attackBlocked = true;
+            StartCoroutine(DelayAttack());
+        }
+        public void BowShoot() {
+             if (attackBlocked)
+                return;
+            animator.SetTrigger("Bow");
+            attackBlocked = true;
+            StartCoroutine(DelayAttack());
+        }
+
+        public void Rolls() {
+            if (attackBlocked)
+                return;
+            animator.SetTrigger("Rolls");
             attackBlocked = true;
             StartCoroutine(DelayAttack());
         }
@@ -90,15 +119,32 @@ namespace Cainos.PixelArtTopDown_Basic
         //Player input for attacking 
         private void OnEnable() {
             attack.action.performed += PerformAttack;
+            Throw.action.performed += PerformThrow;
+            Roll.action.performed += PerformRoll;
+            Bow.action.performed += PerformBow;
         }
 
         private void OnDisable() {
             attack.action.performed -= PerformAttack;
+            Throw.action.performed -= PerformThrow;
+            Roll.action.performed -= PerformRoll;
+            Bow.action.performed -= PerformBow;
         }
 
         private void PerformAttack(InputAction.CallbackContext obj)
         {
             Attacks();
+        }
+
+        private void PerformThrow(InputAction.CallbackContext obj) {
+            Throws();
+        }
+        
+        private void PerformRoll(InputAction.CallbackContext obj) {
+            Rolls();
+        }
+        private void PerformBow(InputAction.CallbackContext obj) {
+            BowShoot();
         }
     
     }

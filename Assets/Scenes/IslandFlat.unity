@@ -6376,6 +6376,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1136100579632718517, guid: 54bffb749ab756e45b6116a80d34fe8e,
         type: 3}
+      propertyPath: Bow
+      value: 
+      objectReference: {fileID: -9130685936413367208, guid: dfbe76551cbec0d4eaf95cb78711fcc8,
+        type: 3}
+    - target: {fileID: 1136100579632718517, guid: 54bffb749ab756e45b6116a80d34fe8e,
+        type: 3}
+      propertyPath: Roll
+      value: 
+      objectReference: {fileID: 8364105405088717991, guid: dfbe76551cbec0d4eaf95cb78711fcc8,
+        type: 3}
+    - target: {fileID: 1136100579632718517, guid: 54bffb749ab756e45b6116a80d34fe8e,
+        type: 3}
+      propertyPath: Throw
+      value: 
+      objectReference: {fileID: -5932723237537278064, guid: dfbe76551cbec0d4eaf95cb78711fcc8,
+        type: 3}
+    - target: {fileID: 1136100579632718517, guid: 54bffb749ab756e45b6116a80d34fe8e,
+        type: 3}
       propertyPath: attack
       value: 
       objectReference: {fileID: -5242948709474883069, guid: dfbe76551cbec0d4eaf95cb78711fcc8,
