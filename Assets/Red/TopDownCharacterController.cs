@@ -13,6 +13,12 @@ namespace Cainos.PixelArtTopDown_Basic
 
         private bool attackBlocked;
 
+        public float meleeDamage = 10f; // Damage dealt by the player's melee attack
+
+        public float attackRange = 5f; // The range of the player's melee attack
+
+        public LayerMask enemyLayer;
+
         private Animator animator;
 
         private AgentMover agentMover;
@@ -20,6 +26,10 @@ namespace Cainos.PixelArtTopDown_Basic
         private Vector2 movementInput;
 
         private SpriteRenderer _renderer;
+
+        public float attackCooldown = 1f; // 1 second cooldown between attacks
+
+        private float lastAttackTime;
 
         [SerializeField]
         private InputActionReference movement, attack, Throw, Roll, Bow;
@@ -133,7 +143,14 @@ namespace Cainos.PixelArtTopDown_Basic
 
         private void PerformAttack(InputAction.CallbackContext obj)
         {
-            Attacks();
+            if (Time.time >= lastAttackTime + attackCooldown && Input.GetButtonDown("Fire1")) // Let's assume "Fire1" is your attack button
+            {
+                Attacks();
+                PerformMeleeAttack();
+                //Debug.Log("Melee attack!");
+                lastAttackTime = Time.time;
+            }
+            
         }
 
         private void PerformThrow(InputAction.CallbackContext obj) {
@@ -146,6 +163,28 @@ namespace Cainos.PixelArtTopDown_Basic
         private void PerformBow(InputAction.CallbackContext obj) {
             BowShoot();
         }
+
+        void PerformMeleeAttack()
+    {
+        // Detect enemies in range of the attack
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position, attackRange, enemyLayer);
+ 
+        // Damage them
+        foreach (Collider2D enemy in hitEnemies)
+        {
+            BoxCollider2D enemyBoxCollider = enemy.GetComponent<BoxCollider2D>();
+
+        // Only hit enemies with a BoxCollider2D
+            if (enemyBoxCollider != null)
+            {
+                EnemyRecieveDamage enemyDamage = enemy.GetComponent<EnemyRecieveDamage>();
+                if (enemyDamage != null)
+                {
+                    enemyDamage.DealDamage(meleeDamage, transform.position);
+                }
+            }
+        } 
+    }
     
     }
 }
