@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    private GameManager gameManager;
 
     private CircleCollider2D vision;
     private Animator animator;
@@ -14,7 +15,9 @@ public class Enemy : MonoBehaviour
 
         animator = GetComponent<Animator>();
         vision = GetComponent<CircleCollider2D>();
+        gameManager = FindObjectOfType<GameManager>();
         EnemyHealth = 100;
+        Debug.Log(gameManager);
     }
 
     private void Update()
@@ -55,11 +58,14 @@ public class Enemy : MonoBehaviour
 
     private void EnemyDie()
     {
-        //kill the Enemy
+        //kills the Enemy
+        Debug.Log("Enemy is dead");
+        gameManager.EnemyDeath();
+        Destroy(gameObject);
+        
+        
 
     }
-
-
 
     private void OnCollisionEnter2D(Collision2D collision)
     {

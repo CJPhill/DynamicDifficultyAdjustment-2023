@@ -13,10 +13,17 @@ namespace Cainos.PixelArtTopDown_Basic
 
         private Color curColor;
         private Color targetColor;
+        private GameManager gameManager;
+
+        private void Start()
+        {
+            gameManager = FindObjectOfType<GameManager>();
+        }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
             targetColor = new Color(1, 1, 1, 1);
+            gameManager.teleportCall();
         }
 
         private void OnTriggerExit2D(Collider2D other)

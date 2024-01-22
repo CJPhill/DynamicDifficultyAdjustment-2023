@@ -16,7 +16,6 @@ public class TopDownCharacterController : MonoBehaviour
     public float attackCooldown = 1f; // 1 second cooldown between attacks
     private float lastAttackTime;
 
-    public float meleeDamage = 10f; // Damage dealt by the player's melee attack
     public float attackRange = 5f; // The range of the player's melee attack
 
 
@@ -145,16 +144,6 @@ public class TopDownCharacterController : MonoBehaviour
     private void PerformAttack(InputAction.CallbackContext obj)
     {
         Attacks();
-        
-        /**
-        if (Time.time >= lastAttackTime + attackCooldown && Input.GetButtonDown("Fire1")) // Let's assume "Fire1" is your attack button
-        {
-            Attacks();
-            PerformMeleeAttack();
-            //Debug.Log("Melee attack!");
-            lastAttackTime = Time.time;
-        }
-        **/
 
     }
     private void PerformThrow(InputAction.CallbackContext obj)

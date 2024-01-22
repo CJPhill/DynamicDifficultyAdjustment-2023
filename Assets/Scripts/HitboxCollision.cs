@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class HitboxCollision : MonoBehaviour
 {
-    private int damage = 10;
+    [SerializeField]
+    private int damage = 100;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -14,7 +15,7 @@ public class HitboxCollision : MonoBehaviour
             Debug.Log("you hit an enemy!");
 
             //Fix to get component of script to call "EnemyTakeDamage"
-            Enemy enemyScript = collision.GetComponent<Enemy>;
+            Enemy enemyScript = collision.gameObject.GetComponent<Enemy>();
             if (enemyScript != null)
             {
                 enemyScript.EnemyTakeDamage(damage);
