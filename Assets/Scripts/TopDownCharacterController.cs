@@ -8,6 +8,7 @@ public class TopDownCharacterController : MonoBehaviour
     public float speed;
     public float delay = 0.3f;
     private Vector2 movementInput;
+    private bool invert = false;
 
     //Check
     public GameObject Hitbox;
@@ -15,6 +16,8 @@ public class TopDownCharacterController : MonoBehaviour
     private bool attackBlocked;
     public float attackCooldown = 1f; // 1 second cooldown between attacks
     private float lastAttackTime;
+
+    private Transform characterTransform;
 
     public float attackRange = 5f; // The range of the player's melee attack
 
@@ -37,6 +40,7 @@ public class TopDownCharacterController : MonoBehaviour
         {
             Debug.LogError("Player Sprite is missing a renderer");
         }
+        characterTransform = GetComponent<Transform>();
     }
 
     private void Awake()
@@ -64,11 +68,15 @@ public class TopDownCharacterController : MonoBehaviour
         if (movementInput.x == -1)
         {
             animator.SetInteger("Direction", 1);
+            invert = true;
+            invertPlayer();
             _renderer.flipX = true;
         }
         else if (movementInput.x == 1)
         {
             animator.SetInteger("Direction", 0);
+            invert = false;
+            invertPlayer();
             _renderer.flipX = false;
         }
         animator.SetBool("IsMoving", movementInput.magnitude > 0);
@@ -80,6 +88,22 @@ public class TopDownCharacterController : MonoBehaviour
             animator.SetFloat("YInput", movementInput.y);
         }
 
+    }
+    
+    private void invertPlayer()
+    {
+        Vector2 theScale = transform.localScale;
+        if (invert)
+        {
+            theScale.x *= -1;
+            
+        }
+        else
+        {
+            theScale.x *= 1;
+            
+        }
+        Debug.Log(attacking);
     }
 
     public void Attacks()
@@ -175,6 +199,18 @@ public class TopDownCharacterController : MonoBehaviour
         }
 
 
+    }
+
+    private void flip()
+    {
+        // Get the current scale of the character
+        Vector3 currentScale = characterTransform.localScale;
+
+        // Invert the scale on the X-axis
+        currentScale.x *= -1;
+
+        // Apply the new scale to the character's transform
+        characterTransform.localScale = currentScale;
     }
 
         

@@ -9,6 +9,8 @@ public class Enemy : MonoBehaviour
     private GameObject target;
 
     private int EnemyHealth;
+    [SerializeField]
+    private int moveSpeed;
 
     private void Start()
     {
@@ -31,6 +33,8 @@ public class Enemy : MonoBehaviour
         {
             //Get coordinate of player, Close in until in "Action zone"
             //Action zone function
+            Vector3 direction = target.transform.position - transform.position; direction = Vector3.Normalize(direction);
+            transform.Translate(direction * moveSpeed * Time.deltaTime);
             enemyAction();
         }
         //else continue idle?
@@ -46,6 +50,8 @@ public class Enemy : MonoBehaviour
         //how to simualte chance? Custom list randomly choose? Ex. [Sw, Sw, Sw, Sw, Sw, Sp, Sp, B] random choice
 
     }
+
+
 
     public void EnemyTakeDamage(int damage)
     {
@@ -67,27 +73,27 @@ public class Enemy : MonoBehaviour
 
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+
+
+    private void OnTriggerEnter2D(Collider2D other)
     {
         //If Player enters collider
         //Target player
         //TODO: Check to make sure it enters vision NOT
-        if (collision.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("Player"))
         {
-            target = collision.gameObject;
+            target = other.gameObject;
 
         }
 
     }
-
-    private void OnCollisionExit2D(Collision2D collision)
+ 
+    private void OnTriggerExit2D(Collider2D other)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("Player"))
         {
             target = null;
         }
     }
-
-
 
 }
