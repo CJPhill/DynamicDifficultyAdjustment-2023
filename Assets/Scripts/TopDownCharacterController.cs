@@ -213,7 +213,7 @@ public class TopDownCharacterController : MonoBehaviour
         characterTransform.localScale = currentScale;
     }
 
-        
+
 
 }
 

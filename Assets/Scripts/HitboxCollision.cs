@@ -6,10 +6,24 @@ public class HitboxCollision : MonoBehaviour
 {
     [SerializeField]
     private int damage = 100;
+    private GameObject parentGameObject;
+
+
+    private void Start()
+    {
+        parentGameObject = gameObject.transform.parent.gameObject;
+
+    }
+
+    public void changeDamage(int damageChange)
+    {
+        damage = damageChange;
+    }
+
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Enemy") && collision is BoxCollider2D)
+        if (collision.gameObject.CompareTag("Enemy") && collision is BoxCollider2D && parentGameObject.CompareTag("Player"))
         {
             //Harm enemy
             Debug.Log("you hit an enemy!");
@@ -19,6 +33,14 @@ public class HitboxCollision : MonoBehaviour
             if (enemyScript != null)
             {
                 enemyScript.EnemyTakeDamage(damage);
+            }
+        }
+        else if (collision.gameObject.CompareTag("Player") && collision is BoxCollider2D && parentGameObject.CompareTag("Enemy"))
+        {
+            PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamage(damage);
             }
         }
     }

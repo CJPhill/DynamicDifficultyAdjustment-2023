@@ -5,9 +5,11 @@ using UnityEngine;
 public class PlayerHealth : MonoBehaviour {
     private float health = 0f;
     [SerializeField] private float maxHealth = 100f;
+    private Animator animator;
 
     private void Start() {
         health = maxHealth;
+        animator = GetComponent<Animator>();
     }
 
     public void RestoreHealth(float heal) {
@@ -27,9 +29,16 @@ public class PlayerHealth : MonoBehaviour {
         }
     }
     public void Die() {
-        Destroy(gameObject);
+        animator.SetTrigger("Dead");
+        //Destroy(gameObject);
         //TODO: End game cimematic thing*
         Debug.Log("die");
+        //Time.timeScale = 0f;
+    }
+
+    public void playerDeath()
+    {
+        Time.timeScale = 0f;
     }
     
 
