@@ -51,7 +51,6 @@ public class TopDownCharacterController : MonoBehaviour
 
     private void Update()
     {
-
         movementInput = movement.action.ReadValue<Vector2>();
         agentMover.MovementInput = movementInput;
 

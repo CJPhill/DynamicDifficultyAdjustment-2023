@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -8,6 +9,7 @@ public class Enemy : MonoBehaviour
 
     private CircleCollider2D vision;
     private Animator animator;
+    private SpriteRenderer _renderer;
     private GameObject target;
 
     private int EnemyHealth;
@@ -19,6 +21,8 @@ public class Enemy : MonoBehaviour
     public float delay = 0.3f;
     private List<string> closeRangeMoves = new List<string>();
 
+    private Vector2 movementInput;
+
 
     private void Start()
     {
@@ -26,8 +30,11 @@ public class Enemy : MonoBehaviour
         animator = GetComponent<Animator>();
         vision = GetComponent<CircleCollider2D>();
         gameManager = FindObjectOfType<GameManager>();
+        _renderer = GetComponent<SpriteRenderer>();
+        movementInput = Vector2.zero;
         EnemyHealth = 100;
-        Debug.Log(gameManager);
+        
+
     }
 
     private void Update()
@@ -44,18 +51,75 @@ public class Enemy : MonoBehaviour
             //Get coordinate of player, Close in until in "Action zone"
             //Action zone function
             Vector3 direction = target.transform.position - transform.position; direction = Vector3.Normalize(direction);
-            transform.Translate(direction * moveSpeed * Time.deltaTime);
+            float distanceToTarget = Vector2.Distance(transform.position, target.transform.position);
+            if (distanceToTarget > 10)
+            {
+                animator.SetBool("IsMoving", false);
+                transform.Translate(Vector2.zero);
+                //Add a "wander/idle" function here later
+            }
+            else
+            {
+                transform.Translate(direction * moveSpeed * Time.deltaTime);
+                animator.SetBool("IsMoving", true);
+            }
+            
         }
+        
         //else continue idle?
     }
 
     private void attackDistanceCheck()
     {
-        
+        Vector2 selfLocation = transform.position;
         if (target != null)
         {
-            float distanceToTarget = Vector3.Distance(transform.position, target.transform.position);
+            float distanceToTarget = Vector2.Distance(transform.position, target.transform.position);
+            Vector2 targetLocation = target.transform.position;
+
             //Debug.Log(distanceToTarget);
+
+            //Calculate location
+            float xDifference = Mathf.Abs(selfLocation.x - targetLocation.x);
+            float yDifference = Mathf.Abs(selfLocation.y - targetLocation.y);
+            
+            if (xDifference > yDifference)
+            {
+                if (transform.position.x > targetLocation.x)
+                {
+                    movementInput.x = -1;
+                    animator.SetInteger("Direction", 1);
+                    _renderer.flipX = true;
+                }
+                else
+                {
+                    movementInput.x = 1;
+                    animator.SetInteger("Direction", 0);
+                    _renderer.flipX = false;
+                }
+                movementInput.y = 0;
+                
+            }
+            else
+            {
+                if (transform.position.y > targetLocation.y)
+                {
+                    movementInput.y = -1;
+                    animator.SetInteger("Direction", 3);
+                }
+                else
+                {
+                    movementInput.y = 1;
+                    animator.SetInteger("Direction", 2);
+                }
+                movementInput.x = 0;
+            
+            }
+            animator.SetFloat("XInput", movementInput.x);
+            animator.SetFloat("YInput", movementInput.y);
+
+
+
             if (distanceToTarget > stopingDistance)
             {
 
@@ -67,11 +131,7 @@ public class Enemy : MonoBehaviour
                 enemyAction();
 
             }
-            if (distanceToTarget > 20)
-            {
-                transform.Translate(Vector2.zero);
-                //Add a "wander/idle" function here later
-            }
+            
         }
         
 
@@ -169,7 +229,7 @@ public class Enemy : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            target = null;
+            //target = null;
         }
     }
 
