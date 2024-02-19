@@ -7,12 +7,12 @@ public class HitboxCollision : MonoBehaviour
     [SerializeField]
     private int damage = 100;
     private GameObject parentGameObject;
-
+    private Animator animator;
 
     private void Start()
     {
         parentGameObject = gameObject.transform.parent.gameObject;
-
+        animator = parentGameObject.GetComponent<Animator>();
     }
 
     public void changeDamage(int damageChange)
@@ -27,11 +27,13 @@ public class HitboxCollision : MonoBehaviour
         {
             //Harm enemy
             Debug.Log("you hit an enemy!");
-
+            
             //Fix to get component of script to call "EnemyTakeDamage"
             Enemy enemyScript = collision.gameObject.GetComponent<Enemy>();
+            TopDownCharacterController player = parentGameObject.GetComponent<TopDownCharacterController>();
             if (enemyScript != null)
             {
+                player.SendAttack();
                 enemyScript.EnemyTakeDamage(damage);
             }
         }

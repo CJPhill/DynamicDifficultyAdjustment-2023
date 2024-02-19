@@ -10,6 +10,8 @@ public class TopDownCharacterController : MonoBehaviour
     private Vector2 movementInput;
     private bool invert = false;
 
+    private GameManager gameManager;
+
     //Check
     public GameObject Hitbox;
     private bool attacking = false; // Delete later
@@ -20,6 +22,7 @@ public class TopDownCharacterController : MonoBehaviour
     private Transform characterTransform;
 
     public float attackRange = 5f; // The range of the player's melee attack
+    private string lastAttack = "";
 
 
     public LayerMask enemyLayer;
@@ -33,6 +36,7 @@ public class TopDownCharacterController : MonoBehaviour
 
     private void Start()
     {
+        gameManager = FindObjectOfType<GameManager>();
         animator = GetComponent<Animator>();
 
         _renderer = GetComponent<SpriteRenderer>();
@@ -112,6 +116,7 @@ public class TopDownCharacterController : MonoBehaviour
         animator.SetTrigger("Attacks");
         attackBlocked = true;
         StartCoroutine(DelayAttack());
+        lastAttack = "Sw";
     }
     public void Throws()
     {
@@ -121,6 +126,7 @@ public class TopDownCharacterController : MonoBehaviour
         attackBlocked = true;
         attacking = true;
         StartCoroutine(DelayAttack());
+        lastAttack = "Sp";
     }
     public void BowShoot()
     {
@@ -129,6 +135,7 @@ public class TopDownCharacterController : MonoBehaviour
         animator.SetTrigger("Bow");
         attackBlocked = true;
         StartCoroutine(DelayAttack());
+        lastAttack = "B";
     }
 
     public void Rolls()
@@ -182,6 +189,18 @@ public class TopDownCharacterController : MonoBehaviour
     {
         BowShoot();
     }
+
+    //recieved from HitboxCollision.cs
+    public void SendAttack()
+    {
+        SendUpdate();
+    }
+
+    private void SendUpdate()
+    {
+        gameManager.receiveData(lastAttack);
+    }
+
 
     //Seems like it might works Can check
     void PerformMeleeAttack()

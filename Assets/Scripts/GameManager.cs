@@ -11,11 +11,16 @@ public class GameManager : Singleton<GameManager>
 
     private int currentSceneIndex;
 
+    private TopDownCharacterController player;
+
+    private string lastAttack = "";
+    private List<string> playerHistory = new List<string>();
+
     // Start is called before the first frame update
     void Start()
     {
-        currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        UpdateEnemyCount();
+        OnNewFloor();
+
     }
 
     //Is called at the start and when Enemy Death is called
@@ -58,5 +63,26 @@ public class GameManager : Singleton<GameManager>
         Debug.Log("Heading to next floor");
         currentSceneIndex++;
         SceneManager.LoadScene(currentSceneIndex);
+    }
+
+    private void OnNewFloor()
+    {
+        currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        UpdateEnemyCount();
+        player = GetComponent<TopDownCharacterController>();
+        playerHistory.Clear();
+    }
+
+    public void receiveData(string attack)
+    {
+        lastAttack = attack;
+        playerAIData();
+    }
+
+    //Section Dealing with the Dyanamic AI
+    private void playerAIData()
+    {
+        playerHistory.Add(lastAttack);
+
     }
 }
