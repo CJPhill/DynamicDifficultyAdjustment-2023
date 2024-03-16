@@ -19,7 +19,7 @@ public class Enemy : MonoBehaviour
 
     private bool attackBlocked;
     public float delay = 0.3f;
-    private List<string> closeRangeMoves = new List<string>();
+    private List<string> EnemyBehaviors = new List<string>();
 
     private Vector2 movementInput;
 
@@ -140,13 +140,6 @@ public class Enemy : MonoBehaviour
     private void enemyAction()
     {
 
-        closeRangeMoves.Add("Sw");
-        closeRangeMoves.Add("Sw");
-        closeRangeMoves.Add("Sw");
-        closeRangeMoves.Add("Sw");
-        closeRangeMoves.Add("Sp");
-        closeRangeMoves.Add("Sp");
-
         //Have enemy decide an action here (can be updated later for DDA)
         //Random choice based on location 
         //Close: > % sword chance
@@ -154,7 +147,7 @@ public class Enemy : MonoBehaviour
         //long: > % bow
         //how to simualte chance? Custom list randomly choose? Ex. [Sw, Sw, Sw, Sw, Sw, Sp, Sp, B] random choice
 
-        string chosenMove = GetRandomItem(closeRangeMoves);
+        string chosenMove = GetRandomItem(EnemyBehaviors);
         if (chosenMove == "Sw")
         {
             Attacks();
@@ -273,6 +266,12 @@ public class Enemy : MonoBehaviour
         animator.SetTrigger("Rolls");
         attackBlocked = true;
         StartCoroutine(DelayAttack());
+    }
+
+
+    public void getBehavior(List<string> behaviors)
+    {
+        EnemyBehaviors = behaviors;
     }
 
 }

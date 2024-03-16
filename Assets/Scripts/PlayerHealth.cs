@@ -6,10 +6,23 @@ public class PlayerHealth : MonoBehaviour {
     private float health = 0f;
     [SerializeField] private float maxHealth = 100f;
     private Animator animator;
+    private bool rolling = false;
 
     private void Start() {
         health = maxHealth;
         animator = GetComponent<Animator>();
+    }
+
+    private void rollingI()
+    {
+        if (rolling == true)
+        {
+            rolling = false;
+        }
+        else
+        {
+            rolling = true;
+        }
     }
 
     public void RestoreHealth(float heal) {
@@ -22,10 +35,14 @@ public class PlayerHealth : MonoBehaviour {
     }
 
     public void TakeDamage(float damage) {
-        health -= damage;
-        Debug.Log("My Health:" + health);
-        if (health <= 0) {
-            Die();
+        if (!rolling)
+        {
+            health -= damage;
+            Debug.Log("My Health:" + health);
+            if (health <= 0)
+            {
+                Die();
+            }
         }
     }
     public void Die() {
