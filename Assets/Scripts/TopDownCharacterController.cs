@@ -106,7 +106,7 @@ public class TopDownCharacterController : MonoBehaviour
             theScale.x *= 1;
             
         }
-        Debug.Log(attacking);
+        //Debug.Log(attacking);
     }
 
     public void Attacks()
@@ -200,38 +200,6 @@ public class TopDownCharacterController : MonoBehaviour
     {
         gameManager.receiveData(lastAttack);
     }
-
-
-    //Seems like it might works Can check
-    void PerformMeleeAttack()
-    {
-        // Detect enemies in range of the attack
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position, attackRange, enemyLayer);
-
-        // Damage them
-        foreach (Collider2D enemy in hitEnemies)
-        {
-            BoxCollider2D enemyBoxCollider = enemy.GetComponent<BoxCollider2D>();
-
-
-        }
-
-
-    }
-
-    private void flip()
-    {
-        // Get the current scale of the character
-        Vector3 currentScale = characterTransform.localScale;
-
-        // Invert the scale on the X-axis
-        currentScale.x *= -1;
-
-        // Apply the new scale to the character's transform
-        characterTransform.localScale = currentScale;
-    }
-
-
 
 }
 

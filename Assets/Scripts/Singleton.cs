@@ -20,6 +20,7 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour {
 					// Couldn't find the singleton in the scene, so make it.
 					GameObject singleton = new GameObject(typeof(T).Name);
 					_instance = singleton.AddComponent<T>();
+					DontDestroyOnLoad(singleton);
 				}
 			}
 			

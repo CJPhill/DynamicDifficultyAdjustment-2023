@@ -32,7 +32,7 @@ public class Enemy : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>();
         _renderer = GetComponent<SpriteRenderer>();
         movementInput = Vector2.zero;
-        EnemyHealth = 100;
+        EnemyHealth = 300;
         
 
     }

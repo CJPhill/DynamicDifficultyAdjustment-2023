@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour {
     private float health = 0f;
-    [SerializeField] private float maxHealth = 100f;
+    [SerializeField] private float maxHealth = 1000000f;
     private Animator animator;
     private bool rolling = false;
 

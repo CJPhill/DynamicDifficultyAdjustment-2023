@@ -1,32 +1,47 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager>
 {
+    [Header("Stage Tracking")]
     private int enemyCount;
     public string prefabTag = "PrefabTag";
-
-    private int currentSceneIndex;
-
     private TopDownCharacterController player;
 
-    private string lastAttack = "";
-    //[TODO]: Change to array<Dictionary> 
+    [Header("Scene Management")]
+    private int currentSceneIndex;
+
+    [Header("DDA Elements")]
     //Each dictionary then has a list of possible moves and from there ++ count
-    private List<string> playerHistory = new List<string>();
+    Dictionary<string, int>[] arrayOfBehaviors = new Dictionary<string, int>[2];
+    private string lastAttack = "";
+    private bool dictReady = false;
     List<string> enemyBehavior = new List<string>();
+    private int dictNum = 0;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
+        if (!dictReady)
+        {
+            for (int i = 0; i < arrayOfBehaviors.Length; i++)
+            {
+                arrayOfBehaviors[i] = new Dictionary<string, int>();
+
+            }
+            dictReady = true;
+        }
         OnNewFloor();
     }
 
     //Is called at the start and when Enemy Death is called
     //Will update the amount of enemies left on stage by checking for the "Enemy" Tag
+
     private void UpdateEnemyCount()
     {
         GameObject[] enemies = GameObject.FindGameObjectsWithTag(prefabTag);
@@ -65,18 +80,31 @@ public class GameManager : Singleton<GameManager>
         Debug.Log("Heading to next floor");
         currentSceneIndex++;
         SceneManager.LoadScene(currentSceneIndex);
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
     }
 
     private void OnNewFloor()
     {
         currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        Debug.Log(currentSceneIndex);
         UpdateEnemyCount();
         player = GetComponent<TopDownCharacterController>();
         createEnemyBehavior();
-        playerHistory.Clear();
-        
+
     }
 
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (currentSceneIndex >= SceneManager.GetActiveScene().buildIndex)
+        {
+            OnNewFloor();
+        }
+    }
+
+    //******************************************************************************
+    //Section: DDA
+    //In charge of keeping a record of the moves that the player has performed
     public void receiveData(string attack)
     {
         lastAttack = attack;
@@ -86,32 +114,61 @@ public class GameManager : Singleton<GameManager>
     //Section Dealing with the Dyanamic AI
     private void playerAIData()
     {
-        playerHistory.Add(lastAttack);
+        Debug.Log("hit that tack");
+        if (arrayOfBehaviors[dictNum].ContainsKey(lastAttack))
+        {
+            Debug.Log("Twice nice");
+            Dictionary<String, int> currentDict = arrayOfBehaviors[dictNum];
+            currentDict[lastAttack]++;
+        }
+        else
+        {
+            Debug.Log("hope to see this first");
+            arrayOfBehaviors[dictNum].Add(lastAttack, 1);
+        }
+        
     }
 
     private void createEnemyBehavior()
     {
-        List<string> history = playerHistory;
-        
-        foreach (string str in history)
-        {
-            if (str == "Sw")
+        enemyBehavior.Clear();
+        if (currentSceneIndex == 0)
+        {  
+            for (int i = 0; i < 5; i++)
             {
-                //Counter to Sword
+                enemyBehavior.Add("Sw");
                 enemyBehavior.Add("Sp");
             }
-            else if (str == "Sp")
+        }
+        else
+        {
+            Debug.Log("Dict Num :" + dictNum);
+            Debug.Log(arrayOfBehaviors[dictNum].Count);
+            foreach (string key in arrayOfBehaviors[dictNum].Keys)
             {
-                //Counter to Spear (Still in work)
-                enemyBehavior.Add("Sw");
+                Debug.Log("Key : " + key);
+                //TODO: Make based on count
+                if (key == "Sw")
+                {
+                    //Counter to Sword
+                    enemyBehavior.Add("Sp");
+                }
+                else if (key == "Sp")
+                {
+                    //Counter to Spear (Still in work)
+                    enemyBehavior.Add("Sw");
+                }
             }
+            dictNum++;
         }
 
         GameObject[] enemies = GameObject.FindGameObjectsWithTag(prefabTag);
-        foreach(GameObject enemy in enemies)
+        foreach (GameObject enemy in enemies)
         {
             Enemy script = enemy.GetComponent<Enemy>();
-            script.getBehavior(history);
+            script.getBehavior(enemyBehavior);
+            
         }
+
     }
 }
