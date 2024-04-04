@@ -197,19 +197,18 @@ public class GameManager : Singleton<GameManager>
         // Create or overwrite the CSV file
         using (StreamWriter writer = new StreamWriter(filePath))
         {
+            // Write header row
+            writer.WriteLine($"dictNum,BehaviorName,Frequency");
+
             for (int i = 0; i < arrayOfBehaviors.Length; i++)
             {
-                // Write header row
-                writer.WriteLine($"dictNum,BehaviorName,Frequency");
+                
 
                 // Write data rows for the dictionary
                 foreach (var kvp in arrayOfBehaviors[i])
                 {
                     writer.WriteLine($"{i},{kvp.Key},{kvp.Value}");
                 }
-
-                // Write empty line as a separator between dictionaries
-                writer.WriteLine();
             }
         }
 

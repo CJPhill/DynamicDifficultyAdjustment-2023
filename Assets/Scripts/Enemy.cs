@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -16,6 +17,18 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private int moveSpeed;
     public float stopingDistance;
+
+    public int minValue = 1;
+    public int maxValue = 10000;
+    private int randomValue;
+    public float backwardDistance = 2f;
+    private bool movingToAttack = false;
+    private bool movingAway = false;
+
+    public float strafeDistance = 3f;
+    public float strafeSpeed = 3f;
+    private bool isStrafing = false;
+    private Vector3 strafeDirection;
 
     private bool attackBlocked;
     public float delay = 0.3f;
@@ -44,8 +57,13 @@ public class Enemy : MonoBehaviour
         
     }
 
+
+    //*******************************************
+    // Items related to enemy movement and states
+
     private void moveTowardsPlayer()
     {
+        /**
         if (target != null)
         {
             //Get coordinate of player, Close in until in "Action zone"
@@ -65,8 +83,56 @@ public class Enemy : MonoBehaviour
             }
             
         }
-        
-        //else continue idle?
+        **/
+        if (target != null)
+        {
+            
+            Vector3 direction = target.transform.position - transform.position;
+            float distanceToTarget = direction.magnitude; // Using magnitude for distance
+            direction.Normalize();
+
+            if (!movingToAttack)
+            {
+                randomValue = Random.Range(minValue, maxValue);
+                // Check if within strafe distance
+                if (distanceToTarget <= strafeDistance)
+                {
+                    isStrafing = true;
+                    strafeDirection = Vector3.Cross(direction, Vector3.forward); // Get perpendicular direction for strafing
+                }
+                else
+                {
+                    isStrafing = false;
+                }
+
+                if (!isStrafing)
+                {
+                    // Regular movement towards the player
+                    transform.Translate(direction * moveSpeed * Time.deltaTime);
+                    animator.SetBool("IsMoving", true);
+                }
+                else
+                {
+                    // Strafing movement
+                    transform.Translate(strafeDirection * strafeSpeed * Time.deltaTime);
+                    animator.SetBool("IsMoving", true);
+                }
+            }
+            
+
+
+            if (randomValue == 5 && !movingAway)
+            {
+                movingToAttack = true;
+                transform.Translate(direction * moveSpeed * Time.deltaTime);
+                animator.SetBool("IsMoving", true);
+            }
+            if (movingAway & movingToAttack)
+            {
+                MoveBackward();
+            }
+        }
+
     }
 
     private void attackDistanceCheck()
@@ -137,51 +203,29 @@ public class Enemy : MonoBehaviour
 
     }
 
-    private void enemyAction()
+    
+    private void MoveBackward()
     {
-
-        //Have enemy decide an action here (can be updated later for DDA)
-        //Random choice based on location 
-        //Close: > % sword chance
-        //Mid: > % spear chance
-        //long: > % bow
-        //how to simualte chance? Custom list randomly choose? Ex. [Sw, Sw, Sw, Sw, Sw, Sp, Sp, B] random choice
-
-        string chosenMove = GetRandomItem(EnemyBehaviors);
-        if (chosenMove == "Sw")
+        movingAway = true;
+        Vector3 direction = target.transform.position - transform.position;
+        transform.Translate(-direction * moveSpeed * Time.deltaTime);
+        animator.SetBool("IsMoving", true);
+        float distanceToTarget = Vector2.Distance(transform.position, target.transform.position);
+        if (distanceToTarget > 3)
         {
-            Attacks();
-        } 
-        else if (chosenMove == "Sp")
-        {
-            Throws();
+            movingToAttack = false;
+            movingAway = false;
         }
+
+
 
     }
+    
 
-    private string GetRandomItem(List<string> list)
-    {
-        // Check if the list is not empty
-        if (list.Count > 0)
-        {
-            // Use UnityEngine.Random for Unity projects
-            // If not using Unity, you can use System.Random
-            // Random rand = new Random();
 
-            // Unity-specific randomization
-            int randomIndex = UnityEngine.Random.Range(0, list.Count);
 
-            // Get the item at the random index
-            string randomItem = list[randomIndex];
-
-            return randomItem;
-
-        }
-        else
-        {
-            return null;
-        }
-    }
+    //*******************************************
+    // Items related to the Enemies status (Health, Damage, etc)
 
     public void EnemyTakeDamage(int damage)
     {
@@ -203,7 +247,8 @@ public class Enemy : MonoBehaviour
 
     }
 
-
+    //********************************************
+    // Items related to Enemy Collision
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -227,13 +272,17 @@ public class Enemy : MonoBehaviour
     }
 
 
+
+
+    //****************************************************
+    // Items related to attacks and animations
+
     private IEnumerator DelayAttack()
     {
         yield return new WaitForSeconds(delay);
         attackBlocked = false;
+        MoveBackward();
     }
-
-
     public void Attacks()
     {
         if (attackBlocked)
@@ -268,10 +317,75 @@ public class Enemy : MonoBehaviour
         StartCoroutine(DelayAttack());
     }
 
+    //*********************************************
+    // Items related to Behaviors and choosing moves
 
     public void getBehavior(List<string> behaviors)
     {
         EnemyBehaviors = behaviors;
+    }
+
+    private void enemyAction()
+    {
+        /**
+        bool shouldStrafe = UnityEngine.Random.value < 0.3f; // Adjust probability as needed
+
+        if (shouldStrafe)
+        {
+            // Randomize strafe direction
+            strafeDirection = new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f)).normalized;
+            isStrafing = true;
+        }
+
+        if (isStrafing)
+        {
+            // Strafe movementw
+            transform.Translate(strafeDirection * strafeSpeed * Time.deltaTime);
+            animator.SetBool("IsMoving", true);
+        }
+        **/
+        //else
+        //{
+            string chosenMove = GetRandomItem(EnemyBehaviors);
+            if (chosenMove == "Sw")
+            {
+                Attacks();
+                //MoveBackward();
+            
+            }
+            else if (chosenMove == "Sp")
+            {
+                Throws();
+                //MoveBackward();
+        }
+        // }
+
+    }
+
+   
+
+    private string GetRandomItem(List<string> list)
+    {
+        // Check if the list is not empty
+        if (list.Count > 0)
+        {
+            // Use UnityEngine.Random for Unity projects
+            // If not using Unity, you can use System.Random
+            // Random rand = new Random();
+
+            // Unity-specific randomization
+            int randomIndex = UnityEngine.Random.Range(0, list.Count);
+
+            // Get the item at the random index
+            string randomItem = list[randomIndex];
+
+            return randomItem;
+
+        }
+        else
+        {
+            return null;
+        }
     }
 
 }
