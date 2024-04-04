@@ -55,6 +55,7 @@ public class TopDownCharacterController : MonoBehaviour
 
     private void Update()
     {
+        checkForQuit();
         movementInput = movement.action.ReadValue<Vector2>();
         agentMover.MovementInput = movementInput;
 
@@ -199,6 +200,14 @@ public class TopDownCharacterController : MonoBehaviour
     private void SendUpdate()
     {
         gameManager.receiveData(lastAttack);
+    }
+
+    private void checkForQuit()
+    {
+        if (Input.GetKey("p"))
+        {
+            Application.Quit();
+        }
     }
 
 }

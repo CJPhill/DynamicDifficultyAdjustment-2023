@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Xml.Serialization;
 using UnityEditor;
 using UnityEngine;
@@ -38,6 +39,7 @@ public class GameManager : Singleton<GameManager>
         }
         OnNewFloor();
     }
+
 
     //Is called at the start and when Enemy Death is called
     //Will update the amount of enemies left on stage by checking for the "Enemy" Tag
@@ -170,5 +172,47 @@ public class GameManager : Singleton<GameManager>
             
         }
 
+    }
+
+    //**********************************************************************
+    // Section: CSV recording & quiting
+    // Description:
+
+
+    //Fix on quit
+    
+
+    private void OnApplicationQuit()
+    {
+        ExportArrayOfDictionariesToCSV();
+    }
+
+
+    // Method to export array of dictionaries to CSV file
+    public void ExportArrayOfDictionariesToCSV()
+    {
+        // File path relative to the Assets directory
+        string filePath = "Assets/CSVs/Behaviors.csv";
+
+        // Create or overwrite the CSV file
+        using (StreamWriter writer = new StreamWriter(filePath))
+        {
+            for (int i = 0; i < arrayOfBehaviors.Length; i++)
+            {
+                // Write header row
+                writer.WriteLine($"dictNum,BehaviorName,Frequency");
+
+                // Write data rows for the dictionary
+                foreach (var kvp in arrayOfBehaviors[i])
+                {
+                    writer.WriteLine($"{i},{kvp.Key},{kvp.Value}");
+                }
+
+                // Write empty line as a separator between dictionaries
+                writer.WriteLine();
+            }
+        }
+
+        Debug.Log("CSV Exported Successfully!");
     }
 }

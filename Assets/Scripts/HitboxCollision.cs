@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class HitboxCollision : MonoBehaviour
 {
@@ -15,11 +16,38 @@ public class HitboxCollision : MonoBehaviour
         animator = parentGameObject.GetComponent<Animator>();
     }
 
+    private void Update()
+    {
+        changePosition();
+    }
+
     public void changeDamage(int damageChange)
     {
         damage = damageChange;
     }
 
+    //Change position of hitbox
+    
+    private void changePosition()
+    {
+        bool normal = true;
+        Vector3 theScale = transform.localScale;
+        Vector3 hitboxPosition = transform.position;
+        if (animator.GetInteger("Direction") == 1 && !normal)
+        {
+            Debug.Log("working");
+            normal = true;
+            theScale.x *= -1; 
+        }
+        else if (animator.GetInteger("Direction") == 0 && normal)
+        {
+            Debug.Log("working2");
+            normal = false;
+            theScale *= -1;
+        }
+        transform.localScale = theScale;
+    }
+    
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
