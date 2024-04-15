@@ -94,6 +94,7 @@ public class Enemy : MonoBehaviour
             if (!movingToAttack)
             {
                 randomValue = Random.Range(minValue, maxValue);
+                Debug.Log(randomValue.ToString());
                 // Check if within strafe distance
                 if (distanceToTarget <= strafeDistance)
                 {

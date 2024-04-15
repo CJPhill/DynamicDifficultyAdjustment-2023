@@ -180,7 +180,7 @@ Transform:
   m_Children:
   - {fileID: 4236290653703191344}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4438585988425254275
 MonoBehaviour:
@@ -196,6 +196,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 2
   stopingDistance: 1.05
+  minValue: 1
+  maxValue: 100
+  backwardDistance: 2
+  strafeDistance: 3
+  strafeSpeed: 3
   delay: 0.3
 --- !u!212 &5172796436374045624
 SpriteRenderer:
