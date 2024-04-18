@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7202155411669342930}
   - component: {fileID: 6451514667369644754}
   - component: {fileID: 8201762085293143051}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Hit_Box
   m_TagString: EnemyHitbox
   m_Icon: {fileID: 0}
@@ -159,7 +159,7 @@ GameObject:
   - component: {fileID: 832184136449640722}
   - component: {fileID: 8640671825209938467}
   - component: {fileID: 5103547933004336570}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: AntiRed
   m_TagString: Enemy
   m_Icon: {fileID: 0}

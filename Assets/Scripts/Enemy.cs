@@ -12,6 +12,7 @@ public class Enemy : MonoBehaviour
     private Animator animator;
     private SpriteRenderer _renderer;
     private GameObject target;
+    private Rigidbody2D rb;
 
     private int EnemyHealth;
     [SerializeField]
@@ -46,6 +47,7 @@ public class Enemy : MonoBehaviour
         _renderer = GetComponent<SpriteRenderer>();
         movementInput = Vector2.zero;
         EnemyHealth = 300;
+        rb = GetComponent<Rigidbody2D>();
         
 
     }

@@ -37,13 +37,13 @@ public class HitboxCollision : MonoBehaviour
         Vector3 hitboxPosition = transform.position;
         if (animator.GetInteger("Direction") == 1 && !normal)
         {
-            Debug.Log("working");
+            //Debug.Log("working");
             normal = true;
             theScale.x *= -1; 
         }
         else if (animator.GetInteger("Direction") == 0 && normal)
         {
-            Debug.Log("working2");
+            //Debug.Log("working2");
             normal = false;
             theScale *= -1;
         }
@@ -56,7 +56,7 @@ public class HitboxCollision : MonoBehaviour
         if (collision.gameObject.CompareTag("Enemy") && collision is BoxCollider2D && parentGameObject.CompareTag("Player"))
         {
             //Harm enemy
-            Debug.Log("you hit an enemy!");
+            //Debug.Log("you hit an enemy!");
             
             //Fix to get component of script to call "EnemyTakeDamage"
             Enemy enemyScript = collision.gameObject.GetComponent<Enemy>();

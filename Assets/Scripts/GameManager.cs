@@ -152,9 +152,15 @@ public class GameManager : Singleton<GameManager>
 
     private void createEnemyBehavior()
     {
+        
+        List<string> holdBehaviors = enemyBehavior;
         enemyBehavior.Clear();
+        int swCount = 0;
+        int spCount = 0;
+
         if (currentSceneIndex == 0)
-        {  
+        {
+            Debug.Log("awww shit");
             for (int i = 0; i < 5; i++)
             {
                 enemyBehavior.Add("Sw");
@@ -163,37 +169,52 @@ public class GameManager : Singleton<GameManager>
         }
         else
         {
-            int swCount = 0;
-            int spCount = 0;
+            
             foreach (string key in arrayOfBehaviors[dictNum].Keys)
             {
-                
-                //TODO: Make based on count
+                Debug.Log("wtf is going on");
+                //TODO: Make based on count I STILL NEED TO DO THIS?????
                 if (key == "Sw")
                 {
-                    //Counter to Sword
-                    enemyBehavior.Add("Sp");
-                    spCount++;
+                    int count = arrayOfBehaviors[dictNum][key];
+                    for (int i = 0; i < count; i++)
+                    {
+                        //Counter to Sword
+                        enemyBehavior.Add("Sp");
+                        spCount++;
+                    }
+                    
                 }
                 else if (key == "Sp")
                 {
                     //Counter to Spear (Still in work)
-                    enemyBehavior.Add("Sw");
-                    swCount++;
+                    int count = arrayOfBehaviors[dictNum][key];
+                    for (int i = 0; i < count; i++)
+                    {
+                        enemyBehavior.Add("Sw");
+                        swCount++;
+                    }
+                    
                 }
             }
             //TODO: Currently just returing mixed
-            if (spCount > swCount + 1)
+
+            Debug.Log(swCount);
+            Debug.Log(spCount);
+            if (spCount > (swCount))
             {
                 currentPolicy = "Anti-Sword";
+                policyUsed.Add(currentPolicy);
             }
-            else if (swCount > spCount + 1)
+            else if (swCount > (spCount))
             {
                 currentPolicy = "Anti-Spear";
+                policyUsed.Add(currentPolicy);
             }
             else
             {
                 currentPolicy = "Mixed";
+                policyUsed.Add(currentPolicy);
             }
             dictNum++;
         }

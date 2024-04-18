@@ -6666,10 +6666,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2435219047061478503, guid: 54bffb749ab756e45b6116a80d34fe8e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2610270595860110194, guid: 54bffb749ab756e45b6116a80d34fe8e,
         type: 3}
       propertyPath: m_Name
       value: Red
+      objectReference: {fileID: 0}
+    - target: {fileID: 2610270595860110194, guid: 54bffb749ab756e45b6116a80d34fe8e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3683766994114521143, guid: 54bffb749ab756e45b6116a80d34fe8e,
         type: 3}
@@ -6749,11 +6759,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6451514667369644754, guid: 2cea84e5b8236834586bea34cfd51cce,
-        type: 3}
-      propertyPath: manager
-      value: 
-      objectReference: {fileID: 425445557}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
