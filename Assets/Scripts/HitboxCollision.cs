@@ -9,9 +9,11 @@ public class HitboxCollision : MonoBehaviour
     private int damage = 100;
     private GameObject parentGameObject;
     private Animator animator;
+    private GameManager gameManager;
 
     private void Start()
     {
+        gameManager = FindObjectOfType<GameManager>();
         parentGameObject = gameObject.transform.parent.gameObject;
         animator = parentGameObject.GetComponent<Animator>();
     }
@@ -71,6 +73,8 @@ public class HitboxCollision : MonoBehaviour
             if (playerHealth != null)
             {
                 playerHealth.TakeDamage(damage);
+                gameManager.increaseHit();
+
             }
         }
     }

@@ -117,6 +117,7 @@ public class TopDownCharacterController : MonoBehaviour
         animator.SetTrigger("Attacks");
         attackBlocked = true;
         StartCoroutine(DelayAttack());
+        gameManager.recordPlayerAttack();
         lastAttack = "Sw";
     }
     public void Throws()
@@ -127,6 +128,7 @@ public class TopDownCharacterController : MonoBehaviour
         attackBlocked = true;
         attacking = true;
         StartCoroutine(DelayAttack());
+        gameManager.recordPlayerAttack();
         lastAttack = "Sp";
     }
     public void BowShoot()
@@ -136,6 +138,7 @@ public class TopDownCharacterController : MonoBehaviour
         animator.SetTrigger("Bow");
         attackBlocked = true;
         StartCoroutine(DelayAttack());
+        gameManager.recordPlayerAttack();
         lastAttack = "B";
     }
 

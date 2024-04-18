@@ -290,6 +290,7 @@ public class Enemy : MonoBehaviour
             return;
         animator.SetTrigger("Attacks");
         attackBlocked = true;
+        gameManager.recordEnemyAttack();
         StartCoroutine(DelayAttack());
     }
     public void Throws()
@@ -298,6 +299,7 @@ public class Enemy : MonoBehaviour
             return;
         animator.SetTrigger("Throws");
         attackBlocked = true;
+        gameManager.recordEnemyAttack();
         StartCoroutine(DelayAttack());
     }
     public void BowShoot()
@@ -306,6 +308,7 @@ public class Enemy : MonoBehaviour
             return;
         animator.SetTrigger("Bow");
         attackBlocked = true;
+        gameManager.recordEnemyAttack();
         StartCoroutine(DelayAttack());
     }
 

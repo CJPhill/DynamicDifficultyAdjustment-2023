@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Xml.Serialization;
 using UnityEditor;
 using UnityEngine;
@@ -23,11 +24,19 @@ public class GameManager : Singleton<GameManager>
     private string lastAttack = "";
     private bool dictReady = false;
     List<string> enemyBehavior = new List<string>();
+    private List<int> timesHit = new List<int>();
     private int dictNum = 0;
+    private float timer = 0f;
+    private List<float> timerTimes = new List<float>();
+    private List<int> numberOfEnemyAttack = new List<int>();
+    private List<int> totalPlayerMoves = new List<int>();
+    private List<string> policyUsed = new List<string>();
+    private string currentPolicy;
 
     // Start is called before the first frame update
     private void Start()
     {
+        currentPolicy = "Base";
         if (!dictReady)
         {
             for (int i = 0; i < arrayOfBehaviors.Length; i++)
@@ -38,6 +47,13 @@ public class GameManager : Singleton<GameManager>
             dictReady = true;
         }
         OnNewFloor();
+
+
+    }
+
+    private void Update()
+    {
+        timerUpdates();
     }
 
 
@@ -79,6 +95,7 @@ public class GameManager : Singleton<GameManager>
 
     private void nextFloor()
     {
+        timerTimes.Add(timer);
         Debug.Log("Heading to next floor");
         currentSceneIndex++;
         SceneManager.LoadScene(currentSceneIndex);
@@ -92,7 +109,12 @@ public class GameManager : Singleton<GameManager>
         Debug.Log(currentSceneIndex);
         UpdateEnemyCount();
         player = GetComponent<TopDownCharacterController>();
+        timesHit.Add(0);
+        numberOfEnemyAttack.Add(0);
+        totalPlayerMoves.Add(0);
         createEnemyBehavior();
+        timerReset();
+        policyUsed.Add(currentPolicy);
 
     }
 
@@ -116,16 +138,13 @@ public class GameManager : Singleton<GameManager>
     //Section Dealing with the Dyanamic AI
     private void playerAIData()
     {
-        Debug.Log("hit that tack");
         if (arrayOfBehaviors[dictNum].ContainsKey(lastAttack))
         {
-            Debug.Log("Twice nice");
             Dictionary<String, int> currentDict = arrayOfBehaviors[dictNum];
             currentDict[lastAttack]++;
         }
         else
         {
-            Debug.Log("hope to see this first");
             arrayOfBehaviors[dictNum].Add(lastAttack, 1);
         }
         
@@ -144,22 +163,37 @@ public class GameManager : Singleton<GameManager>
         }
         else
         {
-            Debug.Log("Dict Num :" + dictNum);
-            Debug.Log(arrayOfBehaviors[dictNum].Count);
+            int swCount = 0;
+            int spCount = 0;
             foreach (string key in arrayOfBehaviors[dictNum].Keys)
             {
-                Debug.Log("Key : " + key);
+                
                 //TODO: Make based on count
                 if (key == "Sw")
                 {
                     //Counter to Sword
                     enemyBehavior.Add("Sp");
+                    spCount++;
                 }
                 else if (key == "Sp")
                 {
                     //Counter to Spear (Still in work)
                     enemyBehavior.Add("Sw");
+                    swCount++;
                 }
+            }
+            //TODO: Currently just returing mixed
+            if (spCount > swCount + 1)
+            {
+                currentPolicy = "Anti-Sword";
+            }
+            else if (swCount > spCount + 1)
+            {
+                currentPolicy = "Anti-Spear";
+            }
+            else
+            {
+                currentPolicy = "Mixed";
             }
             dictNum++;
         }
@@ -174,6 +208,32 @@ public class GameManager : Singleton<GameManager>
 
     }
 
+    //Basic Increment and timer helpers
+    public void increaseHit()
+    {
+        timesHit[dictNum]++;
+    }
+
+    private void timerUpdates()
+    {
+        timer += Time.deltaTime;
+    }
+
+    private void timerReset()
+    {
+        timer = 0;
+    }
+
+    public void recordEnemyAttack()
+    {
+        numberOfEnemyAttack[dictNum]++;
+    }
+
+    public void recordPlayerAttack()
+    {
+        totalPlayerMoves[dictNum]++;    
+    }
+
     //**********************************************************************
     // Section: CSV recording & quiting
     // Description:
@@ -184,6 +244,11 @@ public class GameManager : Singleton<GameManager>
 
     private void OnApplicationQuit()
     {
+        
+        if (timerTimes.Count != timesHit.Count)
+        {
+            timerTimes.Add(-1);
+        }
         ExportArrayOfDictionariesToCSV();
     }
 
@@ -198,7 +263,7 @@ public class GameManager : Singleton<GameManager>
         using (StreamWriter writer = new StreamWriter(filePath))
         {
             // Write header row
-            writer.WriteLine($"dictNum,BehaviorName,Frequency");
+            writer.WriteLine($"dictNum,BehaviorName,Frequency, Times hit, Time to complete, Enemy Total Attacks, Player Total Attacks, Policy Used");
 
             for (int i = 0; i < arrayOfBehaviors.Length; i++)
             {
@@ -207,7 +272,7 @@ public class GameManager : Singleton<GameManager>
                 // Write data rows for the dictionary
                 foreach (var kvp in arrayOfBehaviors[i])
                 {
-                    writer.WriteLine($"{i},{kvp.Key},{kvp.Value}");
+                    writer.WriteLine($"{i}, {kvp.Key}, {kvp.Value}, {timesHit[i]}, {timerTimes[i]}, {numberOfEnemyAttack[i]}, {totalPlayerMoves[i]}, {policyUsed[i]}");
                 }
             }
         }
