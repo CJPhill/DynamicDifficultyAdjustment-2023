@@ -228,7 +228,8 @@ public class Enemy : MonoBehaviour
 
 
     //*******************************************
-    // Items related to the Enemies status (Health, Damage, etc)
+    // Items related to the Enemies status (Health, Damage, etc)\
+    //MOVED
 
     public void EnemyTakeDamage(int damage)
     {
